@@ -14,9 +14,13 @@ namespace PininSharp.Searchers
         public readonly Accelerator Acc;
         public readonly Compressor Strs = new Compressor();
         public PinIn Context { get; internal set; }
-        public readonly SearcherLogic Logic;
+        public SearcherLogic Logic { get; internal set; }
         public readonly PinIn.Ticket Ticket;
-        public static readonly int Threshold = 128;
+
+        /// <summary>
+        /// Threshold to change from Hash to RB Tree
+        /// </summary>
+        public static readonly int Threshold = 256;
 
         public TreeSearcher(SearcherLogic logic, PinIn context)
         {
@@ -54,6 +58,12 @@ namespace PininSharp.Searchers
         {
             Ticket.Renew(Context.Modification);
         }
+
+        public override string ToString()
+        {
+            return $"TreeSearcher_{Logic}";
+        }
+
     }
 
 
@@ -205,8 +215,8 @@ namespace PininSharp.Searchers
     public class NMap<T> : INode<T>
     {
         public Accelerator Acc { get; internal set; }
-        public Dictionary<char, INode<T>> Children;
-        public ISet<int> Leaves = new SortedSet<int>();
+        public IDictionary<char, INode<T>> Children;
+        public ISet<int> Leaves = new HashSet<int>();
 
 
         public virtual void Get(TreeSearcher<T> p, ISet<int> ret, int offset)
@@ -225,7 +235,7 @@ namespace PininSharp.Searchers
             {
                 foreach (var pair in Children)
                 {
-                    pair.Value.Acc.Get(pair.Key, offset)
+                    p.Acc.Get(pair.Key, offset)
                         .ForEach(i => pair.Value.Get(p, ret, offset + i));
                 }
             }
@@ -251,20 +261,16 @@ namespace PininSharp.Searchers
         {
             if (p.Strs.Get(name) == '\0')
             {
-                if (Leaves.Count >= TreeSearcher<T>.Threshold && Leaves != null)
-                    Leaves = new SortedSet<int>(Leaves)
-                        {
-                            identifier
-                        };
+                if (Leaves.Count >= TreeSearcher<T>.Threshold && Leaves is HashSet<int>)
+                    Leaves = new SortedSet<int>(Leaves);
+                Leaves.Add(identifier);
             }
             else
             {
                 Init();
                 var ch = p.Strs.Get(name);
-                var sub = Children[ch];
-                if (sub == null) Put(ch, sub = new NDense<T>());
-                sub = sub.Put(p, name + 1, identifier);
-                Children[ch] = sub;
+                if (!Children.ContainsKey(ch)) Put(ch, new NDense<T>());
+                Children[ch] = Children[ch].Put(p, name + 1, identifier);
             }
 
             return !(this is NAcc<T>) && Children != null && Children.Count > 32 ? new NAcc<T>(p, this) : this;
@@ -273,11 +279,9 @@ namespace PininSharp.Searchers
         public void Put(char ch, INode<T> n)
         {
             Init();
-            if (Children.Count >= TreeSearcher<T>.Threshold && Children != null)
-                Children = new Dictionary<char, INode<T>>(Children)
-                {
-                    { ch, n }
-                };
+            if (Children.Count >= TreeSearcher<T>.Threshold && Children is Dictionary<char, INode<T>>)
+                Children = new SortedDictionary<char, INode<T>>(Children);
+            Children[ch] = n;
         }
 
         private void Init()
@@ -345,19 +349,19 @@ namespace PininSharp.Searchers
                 ch.Pinyins())
             {
                 var key = py.Phonemes[0];
-                if (_index.TryGetValue(py.Phonemes[0], out var value))
+                if (_index.TryGetValue(key, out var value))
                 {
                     if (value.Count >= TreeSearcher<T>.Threshold && !value.Contains(c))
                     {
-                        _index[py.Phonemes[0]] = new SortedSet<char>(value); // Should be CharOpenHashSet
+                        // _index[key] = new HashSet<char>(value); // Should be CharOpenHashSet
                     }
                 }
                 else
                 {
-                    _index[py.Phonemes[0]] = new HashSet<char>(); // Should be CharArraySet
+                    _index[key] = new HashSet<char>(); // Should be CharArraySet
                 }
 
-                _index[py.Phonemes[0]].Add(c);
+                _index[key].Add(c);
             }
         }
     }

@@ -1,0 +1,26 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="large.gz" />
+    <None Remove="small.gz" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="large.gz" />
+    <EmbeddedResource Include="small.gz" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="BenchmarkDotNet" Version="0.13.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\PininSharp\PininSharp.csproj" />
+  </ItemGroup>
+
+</Project>

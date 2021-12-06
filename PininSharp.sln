@@ -1,11 +1,13 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.31911.196
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31919.166
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PininSharp", "PininSharp\PininSharp.csproj", "{918755DC-1DBC-49E6-AAC1-14AD91A76354}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PininSharp.Test", "PininSharp.Test\PininSharp.Test.csproj", "{6C96CA90-159D-4F59-AE05-216175B432F8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PininSharp.Test", "PininSharp.Test\PininSharp.Test.csproj", "{6C96CA90-159D-4F59-AE05-216175B432F8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PininSharp.Benchmark", "PininSharp.Benchmark\PininSharp.Benchmark.csproj", "{EF999707-7BB3-443C-89FD-D460F2986E61}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +23,10 @@ Global
 		{6C96CA90-159D-4F59-AE05-216175B432F8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6C96CA90-159D-4F59-AE05-216175B432F8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6C96CA90-159D-4F59-AE05-216175B432F8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EF999707-7BB3-443C-89FD-D460F2986E61}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EF999707-7BB3-443C-89FD-D460F2986E61}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EF999707-7BB3-443C-89FD-D460F2986E61}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EF999707-7BB3-443C-89FD-D460F2986E61}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

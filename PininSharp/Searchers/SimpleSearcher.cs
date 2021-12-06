@@ -1,11 +1,13 @@
-﻿using PininSharp.Utils;
+﻿using System;
+using PininSharp.Utils;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace PininSharp.Searchers
 {
     public class SimpleSearcher<T> : ISearcher<T>
     {
-        protected List<T> Objs = new List<T>();
+        protected readonly List<T> Objs = new List<T>();
         protected readonly Accelerator Acc;
         protected readonly Compressor Strs = new Compressor();
 
@@ -49,6 +51,11 @@ namespace PininSharp.Searchers
         public virtual void Reset()
         {
             Acc.Reset();
+        }
+
+        public override string ToString()
+        {
+            return $"SimpleSearcher_{Logic}";
         }
     }
 }

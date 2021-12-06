@@ -1,5 +1,6 @@
 ﻿using PininSharp.Utils;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -7,11 +8,12 @@ namespace PininSharp.Elements
 {
     public class Phoneme : IElement
     {
-        private string[] _strs;
+        private int _hash;
+        private string[] _strings;
 
         public override string ToString()
         {
-            return _strs[0];
+            return _strings[0];
         }
 
         public Phoneme(string str, PinIn p)
@@ -21,7 +23,7 @@ namespace PininSharp.Elements
 
         public IndexSet Match(string source, IndexSet idx, int start, bool partial)
         {
-            if (_strs.Length == 1 && _strs[0].Trim() == "") return new IndexSet(idx);
+            if (_strings.Length == 1 && _strings[0].Trim() == "") return new IndexSet(idx);
             var ret = new IndexSet();
             idx.ForEach(i =>
             {
@@ -34,7 +36,7 @@ namespace PininSharp.Elements
 
         public bool IsEmpty()
         {
-            return _strs.Length == 1 && _strs[0].Trim() == "";
+            return _strings.Length == 1 && _strings[0].Trim() == "";
         }
 
         private static int StrCmp(string a, string b, int aStart)
@@ -48,8 +50,8 @@ namespace PininSharp.Elements
         public IndexSet Match(string source, int start, bool partial)
         {
             var ret = new IndexSet();
-            if (_strs.Length == 1 && _strs[0].Trim() == "") return ret;
-            foreach (var str in _strs)
+            if (_strings.Length == 1 && _strings[0].Trim() == "") return ret;
+            foreach (var str in _strings)
             {
                 var size = StrCmp(source, str, start);
                 if (partial && start + size == source.Length) ret.Set(size);  // ending match
@@ -78,7 +80,17 @@ namespace PininSharp.Elements
                     || (p.fEng2En && str.EndsWith("en"))
                     || (p.fIng2In && str.EndsWith("in")))
                 ret.Add(str + 'g');
-            _strs = ret.Select(p.Keyboard.Keys).ToArray();
+            _strings = ret.Select(p.Keyboard.Keys).ToArray();
+        }
+
+        public override int GetHashCode()
+        {
+            return _strings.GetHashCode();
+        }
+
+        public override bool Equals(object obj)
+        {
+            return Equals(_strings, ((Phoneme) obj)?._strings);
         }
     }
 }

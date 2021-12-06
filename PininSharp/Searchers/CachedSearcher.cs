@@ -106,6 +106,11 @@ namespace PininSharp.Searchers
             return list;
         }
 
+        public override string ToString()
+        {
+            return $"CachedSearcher_{Logic}";
+        }
+
 
     }
 
@@ -115,7 +120,7 @@ namespace PininSharp.Searchers
 
         public void Count(T key)
         {
-            var cnt = _data[key] + 1;
+            var cnt = _data.TryGetValue(key, out var x) ? x + 1 : 1;
             _data[key] = cnt;
             if (cnt == int.MaxValue)
             {
