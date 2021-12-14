@@ -7,7 +7,7 @@ namespace PininSharp.Utils
     public static class StringExtension
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static string SubstringInRange(this string str, int startIndex, int endIndex)
+        public static string SpanInRange(this string str, int startIndex, int endIndex)
         {
             return str.Substring(startIndex, endIndex - startIndex);
         }

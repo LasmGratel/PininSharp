@@ -79,29 +79,28 @@ namespace PininSharp.Utils
             Format = format;
         }
 
-        public static readonly PinyinFormat Raw = new PinyinFormat(p => p?.ToString().SubstringInRange(0, p.ToString().Length - 1));
+        public static readonly PinyinFormat Raw = new PinyinFormat(p => p?.ToString()[..^1] ?? "null");
 
-        public static readonly PinyinFormat Number = new PinyinFormat(p => p?.ToString());
+        public static readonly PinyinFormat Number = new PinyinFormat(p => p?.ToString() ?? "null");
 
         public static readonly PinyinFormat Phonetic = new PinyinFormat(p =>
         {
             var s = p.ToString();
 
-            if (Local.TryGetValue(s.SubstringInRange(0, s.Length - 1), out var str))
-                s = str + s[s.Length - 1];
+            if (Local.TryGetValue(s[..^1], out var str))
+                s = str + s[^1];
 
             var sb = new StringBuilder();
 
             string[] split;
-            var len = s.Length;
             if (!Pinyin.HasInitial(s))
             {
-                split = new[] { "", s.SubstringInRange(0, len - 1), s.Substring(len - 1) };
+                split = new[] { "", s[..^1], s[^1..] };
             }
             else
             {
                 var i = s.Length > 2 && s[1] == 'h' ? 2 : 1;
-                split = new[] { s.SubstringInRange(0, i), s.SubstringInRange(i, len - 1), s.Substring(len - 1) };
+                split = new[] { s[..i], s[i..^1], s[^1..] };
             }
 
             var weak = split[2] == "0";
@@ -117,22 +116,21 @@ namespace PininSharp.Utils
             var sb = new StringBuilder();
             var s = p.ToString();
             string finale;
-            var len = s.Length;
 
             if (!Pinyin.HasInitial(s))
             {
-                finale = s.SubstringInRange(0, len - 1);
+                finale = s[..^1];
             }
             else
             {
                 var i = s.Length > 2 && s[1] == 'h' ? 2 : 1;
                 sb.Append(s, 0, i);
-                finale = s.SubstringInRange(i, len - 1);
+                finale = s[i..^1];
             }
 
             var offset = Offset.Contains(finale) ? 1 : 0;
             if (offset == 1) sb.Append(finale, 0, 1);
-            var group = Tones[s[s.Length - 1] - '0'];
+            var group = Tones[s[^1] - '0'];
             sb.Append(group[finale[offset]]);
             if (finale.Length > offset + 1) sb.Append(finale, offset + 1, finale.Length - offset - 1);
             return sb.ToString();

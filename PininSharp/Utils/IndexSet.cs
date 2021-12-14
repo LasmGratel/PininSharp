@@ -160,7 +160,7 @@ namespace PininSharp.Utils
                 _data[index] = set._value + 1;
             }
 
-            public IndexSet Get(int index)
+            public IndexSet? Get(int index)
             {
                 if (index >= _data.Length) return null;
                 var ret = _data[index];

@@ -8,21 +8,21 @@ namespace PininSharp
         public static readonly SearcherLogic Begin = new SearcherLogic(
             (a, offset, start) => a.Begins(offset, start),
             (p, s1, s2) => p.Begins(s1, s2),
-            (s1, s2) => s1.StartsWith(s2),
+            (s1, s2) => s1.StartsWith(s2, StringComparison.Ordinal),
             "Begin"
         );
 
         public static readonly SearcherLogic Contain = new SearcherLogic(
             (a, offset, start) => a.Contains(offset, start),
             (p, s1, s2) => p.Contains(s1, s2),
-            (s1, s2) => s1.Contains(s2),
+            (s1, s2) => s1.Contains(s2, StringComparison.Ordinal),
             "Contain"
         );
 
         public static readonly SearcherLogic Equal = new SearcherLogic(
             (a, offset, start) => a.Matches(offset, start),
             (p, s1, s2) => p.Matches(s1, s2),
-            (s1, s2) => s1 == s2,
+            (s1, s2) => s1.Equals(s2, StringComparison.Ordinal),
             "Equal"
         );
 

@@ -1,4 +1,5 @@
-﻿using PininSharp.Elements;
+﻿using System;
+using PininSharp.Elements;
 using System.Collections.Generic;
 
 namespace PininSharp.Utils
@@ -9,15 +10,18 @@ namespace PininSharp.Utils
         private List<IndexSet.Storage> _cache;
         private char[] _searchChars;
         private string _searchStr;
-        public IProvider Provider { get; private set; }
+        public IProvider? Provider { get; private set; }
 
 
-        private Str _str = new Str();
+        private readonly Str _str = new Str();
         private bool _partial;
 
         public Accelerator(PinIn context)
         {
             _context = context;
+            _cache = new List<IndexSet.Storage>();
+            _searchChars = Array.Empty<char>();
+            _searchStr = string.Empty;
         }
 
         public void Search(string s)
@@ -74,6 +78,7 @@ namespace PininSharp.Utils
         // start - start point in raw text
         public bool Check(int offset, int start)
         {
+            if (Provider is null) return false;
             if (offset == _searchStr.Length) return _partial || Provider.End(start);
             if (Provider.End(start)) return false;
 
@@ -115,7 +120,7 @@ namespace PininSharp.Utils
                 _partial = true;
                 Reset();
             }
-            for (var i = start; !Provider.End(i); i++)
+            for (var i = start; Provider?.End(i) == false; i++)
             {
                 if (Check(offset, i)) return true;
             }
@@ -132,8 +137,8 @@ namespace PininSharp.Utils
             for (var i = 0; ; i++)
             {
                 if (i >= max) return max;
-                var a = Provider.Get(s1 + i);
-                var b = Provider.Get(s2 + i);
+                var a = Provider?.Get(s1 + i);
+                var b = Provider?.Get(s2 + i);
                 if (a != b || a == '\0') return i;
             }
         }
@@ -148,7 +153,7 @@ namespace PininSharp.Utils
 
         public class Str : IProvider
         {
-            public string S;
+            public string S = string.Empty;
 
             public bool End(int i)
             {

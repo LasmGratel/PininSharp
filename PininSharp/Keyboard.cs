@@ -60,12 +60,12 @@ namespace PininSharp
         public static Keyboard Xiaohe = new Keyboard(null, XiaoheKeys, ZeroCutter, true);
         public static Keyboard Ziranma = new Keyboard(null, ZiranmaKeys, ZeroCutter, true);
 
-        private readonly Dictionary<string, string> _local;
-        private readonly Dictionary<string, string> _keys;
+        private readonly Dictionary<string, string>? _local;
+        private readonly Dictionary<string, string>? _keys;
         private readonly Func<string, ICollection<string>> _cutter;
         public readonly bool Duo;
 
-        public Keyboard(Dictionary<string, string> local, Dictionary<string, string> keys,
+        public Keyboard(Dictionary<string, string>? local, Dictionary<string, string>? keys,
         Func<string, ICollection<string>> cutter, bool duo)
         {
             _local = local;
@@ -83,17 +83,17 @@ namespace PininSharp
             if (Pinyin.HasInitial(s))
             {
                 cursor = s.Length > 2 && s[1] == 'h' ? 2 : 1;
-                ret.Add(s.SubstringInRange(0, cursor));
+                ret.Add(s[..cursor]);
             }
 
             // final
             if (s.Length != cursor + 1)
             {
-                ret.Add(s.SubstringInRange(cursor, s.Length - 1));
+                ret.Add(s[cursor..^1]);
             }
 
             // tone
-            ret.Add(s.Substring(s.Length - 1));
+            ret.Add(s[^1..]);
 
             return ret;
         }
@@ -121,8 +121,8 @@ namespace PininSharp
         {
             if (_local == null) return _cutter(s);
 
-            var cut = s.SubstringInRange(0, s.Length - 1);
-            if (_local.TryGetValue(cut, out var alt)) s = alt + s[s.Length - 1];
+            var cut = s[..^1];
+            if (_local.TryGetValue(cut, out var alt)) s = alt + s[^1];
 
             return _cutter(s);
         }

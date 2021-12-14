@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 
 namespace PininSharp.Utils
 {
@@ -15,11 +16,10 @@ namespace PininSharp.Utils
         public int Put(string s)
         {
             _strs.Add(_chars.Count);
-            foreach (var c in s)
-                _chars.Add(c);
+            _chars.AddRange(s);
 
             _chars.Add('\0');
-            return _strs[_strs.Count - 1];
+            return _strs[^1];
         }
 
         public bool End(int i)

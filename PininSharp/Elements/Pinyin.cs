@@ -1,4 +1,5 @@
-﻿using PininSharp.Utils;
+﻿using System;
+using PininSharp.Utils;
 using System.Linq;
 
 namespace PininSharp.Elements
@@ -15,6 +16,7 @@ namespace PininSharp.Elements
         {
             _raw = str;
             Id = id;
+            Phonemes = Array.Empty<Phoneme>();
             Reload(str, p);
         }
 
@@ -62,30 +64,21 @@ namespace PininSharp.Elements
                 // here we implement sequence matching in quanpin, with a dirty trick
                 // if initial is one of 'zh' 'sh' 'ch', and fuzzy is not on, we slice it
                 // the first is one if 'z' 's' 'c', and the second is 'h'
-                bool slice;
                 var sequence = str[0];
-                switch (sequence)
+                var slice = sequence switch
                 {
-                    case 'z':
-                        slice = !p.fZh2Z;
-                        break;
-                    case 'c':
-                        slice = !p.fCh2C;
-                        break;
-                    case 's':
-                        slice = !p.fSh2S;
-                        break;
-                    default:
-                        slice = false;
-                        break;
-                }
+                    'z' => !p.fZh2Z,
+                    'c' => !p.fCh2C,
+                    's' => !p.fSh2S,
+                    _ => false
+                };
                 if (slice)
                 {
                     l[0] = p.GetPhoneme(sequence.ToString());
                     l.Insert(1, p.GetPhoneme("h"));
                 }
             }
-            Phonemes = l.ToArray();
+            Phonemes = l.Where(x => x != null).Select(x => x!).ToArray();
 
             _duo = p.Keyboard.Duo;
         }

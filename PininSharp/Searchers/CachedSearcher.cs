@@ -67,7 +67,7 @@ namespace PininSharp.Searchers
             _stats.Count(name);
 
             if (_cache.TryGetValue(name, out var ret)) return ret;
-            var baseList = this.Filter(name.SubstringInRange(0, name.Length - 1));
+            var baseList = Filter(name[..^1]);
             if (_cache.Count >= _maxCached)
             {
                 var least = _stats.Least(_cache.Keys, name);
@@ -96,7 +96,7 @@ namespace PininSharp.Searchers
 
         private List<int> Test(string name)
         {
-            var list = Filter(name.SubstringInRange(0, Math.Min(name.Length, _lenCached)));
+            var list = Filter(name[..Math.Min(name.Length, _lenCached)]);
             if (Logic == SearcherLogic.Equal || name.Length > _lenCached)
             {
                 Acc.Search(name);

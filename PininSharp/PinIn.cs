@@ -12,7 +12,7 @@ namespace PininSharp
 
         private readonly Cache<string, Phoneme> _phonemes;
         private readonly Cache<string, Pinyin> _pinyins;
-        private readonly Character[] _chars = new Character[char.MaxValue];
+        private readonly Character?[] _chars = new Character[char.MaxValue];
         private readonly Character.Dummy _temp = new Character.Dummy();
         private readonly ThreadLocal<Accelerator> _acc;
 
@@ -51,13 +51,13 @@ namespace PininSharp
                 }
                 else
                 {
-                    var pinyins = new Pinyin[ss.Length];
+                    var pinyins = new Pinyin?[ss.Length];
                     for (var i = 0; i < ss.Length; i++)
                     {
                         pinyins[i] = GetPinyin(ss[i]);
                         if (pinyins[i] == null) Console.WriteLine("Cannot get pinyin for {0}", ss[i]);
                     }
-                    _chars[c] = new Character(c, pinyins);
+                    _chars[c] = new Character(c, pinyins.Where(x => x != null).Select(x => x!).ToArray());
                 }
             });
         }
@@ -95,12 +95,12 @@ namespace PininSharp
             return Matcher.Matches(s1, s2, this);
         }
 
-        public Phoneme GetPhoneme(string s)
+        public Phoneme? GetPhoneme(string s)
         {
             return _phonemes.Get(s);
         }
 
-        public Pinyin GetPinyin(string s)
+        public Pinyin? GetPinyin(string s)
         {
             return _pinyins.Get(s);
         }
@@ -130,8 +130,8 @@ namespace PininSharp
 
         public void CommitChanges()
         {
-            _phonemes.ForEach(pair => pair.Value.Reload(pair.Key, this));
-            _pinyins.ForEach(pair => pair.Value.Reload(pair.Key, this));
+            _phonemes.ForEach(pair => pair.Value?.Reload(pair.Key, this));
+            _pinyins.ForEach(pair => pair.Value?.Reload(pair.Key, this));
             Modification++;
         }
 
@@ -139,13 +139,13 @@ namespace PininSharp
         {
             public static bool Begins(string s1, string s2, PinIn p)
             {
-                if (s1.Trim() == "") return s1.StartsWith(s2);
+                if (s1.Trim() == "") return s1.StartsWith(s2, StringComparison.Ordinal);
                 return Check(s1, 0, s2, 0, p, true);
             }
 
             public static bool Contains(string s1, string s2, PinIn p)
             {
-                if (s1.Trim() == "") return s1.Contains(s2);
+                if (s1.Trim() == "") return s1.Contains(s2, StringComparison.Ordinal);
                 return s1.Where((t, i) => Check(s1, i, s2, 0, p, true)).Any();
             }
 

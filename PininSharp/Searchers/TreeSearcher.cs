@@ -76,7 +76,7 @@ namespace PininSharp.Searchers
 
         INode<T> Put(TreeSearcher<T> p, int name, int identifier);
 
-        Accelerator Acc { get; }
+        Accelerator? Acc { get; }
     }
 
     public class NSlice<T> : INode<T>
@@ -84,7 +84,7 @@ namespace PininSharp.Searchers
         private INode<T> _exit = new NMap<T>();
         private readonly int _start;
         private int _end;
-        public Accelerator Acc { get; internal set; }
+        public Accelerator? Acc { get; internal set; }
 
         public NSlice(int start, int end)
         {
@@ -127,6 +127,7 @@ namespace PininSharp.Searchers
             {
                 var half = new NSlice<T>(offset + 1, _end)
                 {
+                    Acc = Acc,
                     _exit = _exit
                 };
                 insert.Put(p.Strs.Get(offset), half);
@@ -155,7 +156,7 @@ namespace PininSharp.Searchers
 
     public class NDense<T> : INode<T>
     {
-        public Accelerator Acc { get; internal set; }
+        public Accelerator? Acc { get; internal set; }
 
         // offset, object, offset, object
         private readonly List<int> _data = new List<int>();
@@ -186,7 +187,7 @@ namespace PininSharp.Searchers
             if (_data.Count >= TreeSearcher<T>.Threshold)
             {
                 var pattern = _data[0];
-                INode<T> ret = new NSlice<T>(pattern, pattern + Match(p));
+                INode<T> ret = new NSlice<T>(pattern, pattern + Match(p)) { Acc = Acc };
                 for (var j = 0; j < _data.Count / 2; j++)
                     ret.Put(p, _data[j * 2], _data[j * 2 + 1]);
                 ret.Put(p, name, identifier);
@@ -214,8 +215,8 @@ namespace PininSharp.Searchers
 
     public class NMap<T> : INode<T>
     {
-        public Accelerator Acc { get; internal set; }
-        public IDictionary<char, INode<T>> Children;
+        public Accelerator? Acc { get; internal set; }
+        public IDictionary<char, INode<T>>? Children;
         public ISet<int> Leaves = new HashSet<int>();
 
 
@@ -269,7 +270,7 @@ namespace PininSharp.Searchers
             {
                 Init();
                 var ch = p.Strs.Get(name);
-                if (!Children.ContainsKey(ch)) Put(ch, new NDense<T>());
+                if (!Children!.ContainsKey(ch)) Put(ch, new NDense<T>());
                 Children[ch] = Children[ch].Put(p, name + 1, identifier);
             }
 
@@ -279,14 +280,14 @@ namespace PininSharp.Searchers
         public void Put(char ch, INode<T> n)
         {
             Init();
-            if (Children.Count >= TreeSearcher<T>.Threshold && Children is Dictionary<char, INode<T>>)
+            if (Children!.Count >= TreeSearcher<T>.Threshold && Children is Dictionary<char, INode<T>>)
                 Children = new SortedDictionary<char, INode<T>>(Children);
             Children[ch] = n;
         }
 
         private void Init()
         {
-            if (Children == null) Children = new Dictionary<char, INode<T>>();
+            Children ??= new Dictionary<char, INode<T>>();
         }
     }
 
@@ -317,10 +318,10 @@ namespace PininSharp.Searchers
             }
             else
             {
-                if (Children.TryGetValue(p.Acc.Search()[offset], out var n)) n.Get(p, ret, offset + 1);
+                if (Children?.TryGetValue(p.Acc.Search()[offset], out var n) == true) n?.Get(p, ret, offset + 1);
                 foreach (var c in _index.Where(pair => !pair.Key.Match(p.Acc.Search(), offset, true).IsEmpty()).SelectMany(pair => pair.Value))
                 {
-                    p.Acc.Get(c, offset).ForEach(j => Children[c].Get(p, ret, offset + j));
+                    p.Acc.Get(c, offset).ForEach(j => Children?[c].Get(p, ret, offset + j));
                 }
             }
         }
@@ -336,6 +337,7 @@ namespace PininSharp.Searchers
         public void Reload(TreeSearcher<T> p)
         {
             _index.Clear();
+            Children ??= new Dictionary<char, INode<T>>();
             foreach (var i in Children.Keys)
             {
                 Index(p, i);

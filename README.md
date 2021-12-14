@@ -1,5 +1,6 @@
 # PininSharp
-PinIn in C#
+
+C# 的拼音搜索支持，性能和 Java 版相近。
 
 ## Credits
 

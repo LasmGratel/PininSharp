@@ -8,7 +8,6 @@ namespace PininSharp.Elements
 {
     public class Phoneme : IElement
     {
-        private int _hash;
         private string[] _strings;
 
         public override string ToString()
@@ -18,10 +17,11 @@ namespace PininSharp.Elements
 
         public Phoneme(string str, PinIn p)
         {
+            _strings = Array.Empty<string>();
             Reload(str, p);
         }
 
-        public IndexSet Match(string source, IndexSet idx, int start, bool partial)
+        public IndexSet Match(ref string source, IndexSet idx, int start, bool partial)
         {
             if (_strings.Length == 1 && _strings[0].Trim() == "") return new IndexSet(idx);
             var ret = new IndexSet();
@@ -67,15 +67,17 @@ namespace PininSharp.Elements
                 str
             };
 
+            
+
             if (p.fCh2C && str.StartsWith("c")) ret.AddAll(new[] { "c", "ch" });
             if (p.fSh2S && str.StartsWith("s")) ret.AddAll(new[] { "s", "sh" });
             if (p.fZh2Z && str.StartsWith("z")) ret.AddAll(new[] { "z", "zh" });
             if (p.fU2V && str.StartsWith("v"))
-                ret.Add("u" + str.Substring(1));
+                ret.Add("u" + str[1..]);
             if ((p.fAng2An && str.EndsWith("ang"))
                     || (p.fEng2En && str.EndsWith("eng"))
                     || (p.fIng2In && str.EndsWith("ing")))
-                ret.Add(str.SubstringInRange(0, str.Length - 1));
+                ret.Add(str[..^1]);
             if ((p.fAng2An && str.EndsWith("an"))
                     || (p.fEng2En && str.EndsWith("en"))
                     || (p.fIng2In && str.EndsWith("in")))
@@ -90,7 +92,7 @@ namespace PininSharp.Elements
 
         public override bool Equals(object obj)
         {
-            return Equals(_strings, ((Phoneme) obj)?._strings);
+            return Equals(_strings, ((Phoneme) obj)._strings);
         }
     }
 }
