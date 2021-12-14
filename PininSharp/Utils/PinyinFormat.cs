@@ -79,9 +79,9 @@ namespace PininSharp.Utils
             Format = format;
         }
 
-        public static readonly PinyinFormat Raw = new PinyinFormat(p => p?.ToString()[..^1] ?? "null");
+        public static readonly PinyinFormat Raw = new PinyinFormat(p => p.ToString()[..^1] ?? "null");
 
-        public static readonly PinyinFormat Number = new PinyinFormat(p => p?.ToString() ?? "null");
+        public static readonly PinyinFormat Number = new PinyinFormat(p => p.ToString() ?? "null");
 
         public static readonly PinyinFormat Phonetic = new PinyinFormat(p =>
         {

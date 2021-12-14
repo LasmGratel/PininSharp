@@ -11,7 +11,7 @@ namespace PininSharp.Test
         [TestMethod]
         public void Quanpin()
         {
-            var p = new PinIn();
+            var p = PinIn.CreateDefault();
             Assert.IsTrue(p.Contains("测试文本", "ceshiwenben"));
             Assert.IsTrue(p.Contains("测试文本", "ceshiwenbe"));
             Assert.IsTrue(p.Contains("测试文本", "ceshiwben"));
@@ -30,6 +30,7 @@ namespace PininSharp.Test
         public void Daqian()
         {
             var p = new PinIn { Keyboard = Keyboard.Daqian };
+            p.Load();
             p.CommitChanges();
             Assert.IsTrue(p.Contains("测试文本", "hk4g4jp61p3"));
             Assert.IsTrue(p.Contains("测试文本", "hkgjp1"));
@@ -47,6 +48,7 @@ namespace PininSharp.Test
         public void Xiaohe()
         {
             var p = new PinIn { Keyboard = Keyboard.Xiaohe };
+            p.Load();
             p.CommitChanges();
             Assert.IsTrue(p.Contains("测试文本", "ceuiwfbf"));
             Assert.IsTrue(p.Contains("测试文本", "ceuiwf2"));
@@ -60,6 +62,7 @@ namespace PininSharp.Test
         public void Ziranma()
         {
             var p = new PinIn { Keyboard = Keyboard.Ziranma };
+            p.Load();
             p.CommitChanges();
             Assert.IsTrue(p.Contains("测试文本", "ceuiwfbf"));
             Assert.IsTrue(p.Contains("测试文本", "ceuiwf2"));
@@ -73,7 +76,7 @@ namespace PininSharp.Test
         [TestMethod]
         public void Tree()
         {
-            var tree = new TreeSearcher<int>(SearcherLogic.Contain, new PinIn());
+            var tree = new TreeSearcher<int>(SearcherLogic.Contain, PinIn.CreateDefault());
             tree.Put("测试文本", 1);
             tree.Put("测试切分", 5);
             tree.Put("测试切分文本", 6);
@@ -113,7 +116,7 @@ namespace PininSharp.Test
         [TestMethod]
         public void Context()
         {
-            var p = new PinIn();
+            var p = PinIn.CreateDefault();
             var tree = new TreeSearcher<int>(SearcherLogic.Contain, p);
             tree.Put("测试文本", 0);
             tree.Put("测试文字", 3);
@@ -126,13 +129,27 @@ namespace PininSharp.Test
             Assert.IsTrue(s.Count == 2);
             s = tree.Search("ce4siw");
             Assert.IsTrue(s.Count == 0);
-            p.fSh2S = true;
+            p = new PinIn
+            {
+                fSh2S = true,
+            };
+            p.Load();
             p.CommitChanges();
+            tree = new TreeSearcher<int>(SearcherLogic.Contain, p);
+            tree.Put("测试文本", 0);
+            tree.Put("测试文字", 3);
             s = tree.Search("ce4siw");
             Assert.IsTrue(s.Count == 2);
-            p.fSh2S = false;
-            p.Keyboard = Keyboard.Daqian;
+            p = new PinIn
+            {
+                fSh2S = false,
+                Keyboard = Keyboard.Daqian
+            };
+            p.Load();
             p.CommitChanges();
+            tree = new TreeSearcher<int>(SearcherLogic.Contain, p);
+            tree.Put("测试文本", 0);
+            tree.Put("测试文字", 3);
             s = tree.Search("hk4g4jp61p3");
             Assert.IsTrue(s.Count == 1);
             s = tree.Search("ce4shi4wb");
@@ -144,8 +161,8 @@ namespace PininSharp.Test
         {
             var ss = new List<ISearcher<int>>
             {
-                new TreeSearcher<int>(SearcherLogic.Equal, new PinIn()),
-                new SimpleSearcher<int>(SearcherLogic.Equal, new PinIn())
+                new TreeSearcher<int>(SearcherLogic.Equal, PinIn.CreateDefault()),
+                new SimpleSearcher<int>(SearcherLogic.Equal, PinIn.CreateDefault())
             };
             foreach (var s in ss)
             {
@@ -180,6 +197,7 @@ namespace PininSharp.Test
         public void Format()
         {
             var pi = new PinIn();
+            pi.Load();
             var ch = pi.GetCharacter('圆');
             var py = ch.Pinyins()[0];
             Assert.IsTrue(PinyinFormat.Number.Format(py).Equals("yuan2"));
@@ -188,7 +206,7 @@ namespace PininSharp.Test
             Assert.IsTrue(PinyinFormat.Phonetic.Format(py).Equals("ㄩㄢˊ"));
             pi.format = PinyinFormat.Phonetic;
             pi.CommitChanges();
-            Assert.IsTrue(pi.Format(pi.GetPinyin("le0")).Equals("˙ㄌㄜ"));
+            Assert.IsTrue(pi.Format(pi.GetPinyin("le0").Value!).Equals("˙ㄌㄜ"));
         }
     }
 }

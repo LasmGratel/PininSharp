@@ -1,5 +1,6 @@
 ﻿using PininSharp.Utils;
 using System;
+using System.Linq;
 
 namespace PininSharp.Elements
 {
@@ -19,8 +20,7 @@ namespace PininSharp.Elements
         public IndexSet Match(string str, int start, bool partial)
         {
             var ret = (str[start] == Ch ? IndexSet.One : IndexSet.None).Copy();
-            foreach (var p in _pinyin) ret.Merge(p.Match(str, start, partial));
-            return ret;
+            return _pinyin.Aggregate(ret, (current, p) => current.Merge(p.Match(str, start, partial)));
         }
 
         public char Get()

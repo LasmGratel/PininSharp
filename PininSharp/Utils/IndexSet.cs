@@ -5,19 +5,15 @@ using System.Text;
 
 namespace PininSharp.Utils
 {
-    public class IndexSet : IEnumerable<int>
+    public readonly struct IndexSet : IEnumerable<int>
     {
         public static readonly IndexSet Zero = new IndexSet(0x1);
         public static readonly IndexSet One = new IndexSet(0x2);
         public static readonly IndexSet None = new IndexSet(0x0);
 
-        private int _value;
+        private readonly int _value;
 
-        public IndexSet()
-        {
-        }
-
-        public IndexSet(IndexSet set)
+        public IndexSet(in IndexSet set)
         {
             _value = set._value;
         }
@@ -27,10 +23,10 @@ namespace PininSharp.Utils
             _value = value;
         }
 
-        public virtual void Set(int index)
+        public IndexSet Set(int index)
         {
             var i = 0x1 << index;
-            _value |= i;
+            return new IndexSet(_value | i);
         }
 
         public bool Get(int index)
@@ -39,9 +35,14 @@ namespace PininSharp.Utils
             return (_value & i) != 0;
         }
 
-        public virtual void Merge(IndexSet s)
+        public IndexSet Merge(in IndexSet s)
         {
-            _value = _value == 0x1 ? s._value : (_value |= s._value);
+            var value = _value;
+            if (value == 0x1)
+                value = s._value;
+            else
+                value = value |= s._value;
+            return new IndexSet(value);
         }
 
         public bool Traverse(Func<int, bool> p)
@@ -67,9 +68,9 @@ namespace PininSharp.Utils
             }
         }
 
-        public virtual void Offset(int i)
+        public IndexSet Offset(int i)
         {
-            _value <<= i;
+            return new IndexSet(_value << i);
         }
 
 
@@ -117,30 +118,8 @@ namespace PininSharp.Utils
             return new IndexSet(_value);
         }
 
-        public sealed class Immutable : IndexSet
-        {
-
-            public override void Set(int index)
-            {
-                throw new Exception("Immutable collection");
-            }
-
-
-            public override void Merge(IndexSet s)
-            {
-                throw new Exception("Immutable collection");
-            }
-
-
-            public override void Offset(int i)
-            {
-                throw new Exception("Immutable collection");
-            }
-        }
-
         public sealed class Storage
         {
-            private readonly IndexSet _tmp = new Immutable();
             private int[] _data = new int[16];
 
             public void Set(IndexSet set, int index)
@@ -164,9 +143,7 @@ namespace PininSharp.Utils
             {
                 if (index >= _data.Length) return null;
                 var ret = _data[index];
-                if (ret == 0) return null;
-                _tmp._value = ret - 1;
-                return _tmp;
+                return ret == 0 ? null : new IndexSet(ret - 1);
             }
         }
     }

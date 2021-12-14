@@ -21,15 +21,15 @@ namespace PininSharp.Elements
             Reload(str, p);
         }
 
-        public IndexSet Match(ref string source, IndexSet idx, int start, bool partial)
+        public IndexSet Match(string source, IndexSet idx, int start, bool partial)
         {
             if (_strings.Length == 1 && _strings[0].Trim() == "") return new IndexSet(idx);
-            var ret = new IndexSet();
+            var ret = new IndexSet(0);
             idx.ForEach(i =>
             {
                 var set = Match(source, start + i, partial);
-                set.Offset(i);
-                ret.Merge(set);
+                set = set.Offset(i);
+                ret = ret.Merge(set);
             });
             return ret;
         }
@@ -49,13 +49,13 @@ namespace PininSharp.Elements
 
         public IndexSet Match(string source, int start, bool partial)
         {
-            var ret = new IndexSet();
+            var ret = new IndexSet(0);
             if (_strings.Length == 1 && _strings[0].Trim() == "") return ret;
             foreach (var str in _strings)
             {
                 var size = StrCmp(source, str, start);
-                if (partial && start + size == source.Length) ret.Set(size);  // ending match
-                else if (size == str.Length) ret.Set(size); // full match
+                if (partial && start + size == source.Length) ret = ret.Set(size);  // ending match
+                else if (size == str.Length) ret = ret.Set(size); // full match
             }
             return ret;
         }

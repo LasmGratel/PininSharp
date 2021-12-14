@@ -27,6 +27,7 @@ namespace PininSharp
         public bool fU2V { get; set; } = false;
         public bool Accelerate { get; set; } = false;
         public PinyinFormat format = PinyinFormat.Number;
+        public IDictLoader Loader;
 
         /**
          * Use PinIn object to manage the context
@@ -43,7 +44,12 @@ namespace PininSharp
 
             _acc = new ThreadLocal<Accelerator>(() => new Accelerator(this));
 
-            loader.Load((c, ss) =>
+            Loader = loader;
+        }
+
+        public void Load()
+        {
+            Loader.Load((c, ss) =>
             {
                 if (ss == null)
                 {
@@ -57,9 +63,16 @@ namespace PininSharp
                         pinyins[i] = GetPinyin(ss[i]);
                         if (pinyins[i] == null) Console.WriteLine("Cannot get pinyin for {0}", ss[i]);
                     }
-                    _chars[c] = new Character(c, pinyins.Where(x => x != null).Select(x => x!).ToArray());
+                    _chars[c] = new Character(c, pinyins.Where(x => x != null).Select(x => x!.Value).ToArray());
                 }
             });
+        }
+
+        public static PinIn CreateDefault()
+        {
+            var p = new PinIn();
+            p.Load();
+            return p;
         }
 
         public bool Contains(string s1, string s2)
@@ -131,7 +144,6 @@ namespace PininSharp
         public void CommitChanges()
         {
             _phonemes.ForEach(pair => pair.Value?.Reload(pair.Key, this));
-            _pinyins.ForEach(pair => pair.Value?.Reload(pair.Key, this));
             Modification++;
         }
 

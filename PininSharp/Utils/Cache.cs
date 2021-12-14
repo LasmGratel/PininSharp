@@ -3,9 +3,9 @@ using System.Collections.Generic;
 
 namespace PininSharp.Utils
 {
-    public class Cache<TK, TV> where TV : class
+    public class Cache<TK, TV>
     {
-        public Dictionary<TK, WeakReference<TV?>> Data = new Dictionary<TK, WeakReference<TV?>>();
+        public Dictionary<TK, TV> Data = new Dictionary<TK, TV>();
 
         public Func<TK, TV> Generator;
 
@@ -14,24 +14,19 @@ namespace PininSharp.Utils
             Generator = generator;
         }
 
-        public TV? Get(TK key)
+        public TV Get(TK key)
         {
-            if (!Data.ContainsKey(key)) Data[key] = new WeakReference<TV?>(null);
-            var weak = Data[key];
-            if (weak.TryGetTarget(out var ret))
-                return ret;
-
+            if (Data.TryGetValue(key, out var ret)) return ret;
             ret = Generator(key);
-            weak.SetTarget(ret);
+            if (ret != null) Data[key] = ret;
             return ret;
         }
 
-        public void ForEach(Action<KeyValuePair<TK, TV?>> c)
+        public void ForEach(Action<KeyValuePair<TK, TV>> c)
         {
-            foreach (var (key, value) in Data)
+            foreach (var pair in Data)
             {
-                if (value.TryGetTarget(out var ret))
-                    c(new KeyValuePair<TK, TV?>(key, ret));
+                c(pair);
             }
         }
 

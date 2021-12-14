@@ -1,6 +1,7 @@
 ﻿using System;
 using PininSharp.Elements;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace PininSharp.Utils
 {
@@ -40,8 +41,7 @@ namespace PininSharp.Utils
         {
             var c = _context.GetCharacter(ch);
             var ret = (_searchChars[offset] == c.Get() ? IndexSet.One : IndexSet.None).Copy();
-            foreach (var p in c.Pinyins()) ret.Merge(Get(p, offset));
-            return ret;
+            return c.Pinyins().Aggregate(ret, (current, p) => current.Merge(Get(p, offset)));
         }
 
         public IndexSet Get(Pinyin p, int offset)
@@ -50,12 +50,10 @@ namespace PininSharp.Utils
                 _cache.Add(new IndexSet.Storage());
             var data = _cache[offset];
             var ret = data.Get(p.Id);
-            if (ret == null)
-            {
-                ret = p.Match(_searchStr, offset, _partial);
-                data.Set(ret, p.Id);
-            }
-            return ret;
+            if (ret != null) return ret.Value;
+            var indexSet = p.Match(_searchStr, offset, _partial);
+            data.Set(indexSet, p.Id);
+            return indexSet;
         }
 
         public void SetProvider(IProvider p)
