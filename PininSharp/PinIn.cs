@@ -12,12 +12,10 @@ namespace PininSharp
 
         private readonly Cache<string, Phoneme> _phonemes;
         private readonly Cache<string, Pinyin> _pinyins;
-        private readonly Character?[] _chars = new Character[char.MaxValue];
-        private readonly Character.Dummy _temp = new Character.Dummy();
+        private readonly Character?[] _chars = new Character?[char.MaxValue];
         private readonly ThreadLocal<Accelerator> _acc;
 
         public Keyboard Keyboard { get; set; } = Keyboard.Quanpin;
-        public int Modification { get; set; }
         public bool fZh2Z { get; set; } = false;
         public bool fSh2S { get; set; } = false;
         public bool fCh2C { get; set; } = false;
@@ -121,30 +119,12 @@ namespace PininSharp
         public Character GetCharacter(char c)
         {
             var ret = _chars[c];
-            if (ret != null)
-            {
-                return ret;
-            }
-
-            _temp.Set(c);
-            return _temp;
+            return ret ?? new Character(c, Array.Empty<Pinyin>());
         }
 
-        public string Format(Pinyin p)
+        public string Format(in Pinyin p)
         {
             return format.Format(p);
-        }
-
-
-        public Ticket CreateTicket(Action r)
-        {
-            return new Ticket(r, Modification);
-        }
-
-        public void CommitChanges()
-        {
-            _phonemes.ForEach(pair => pair.Value?.Reload(pair.Key, this));
-            Modification++;
         }
 
         public static class Matcher
@@ -181,25 +161,6 @@ namespace PininSharp
                 }
 
                 return !s.Traverse(i => !Check(s1, start1 + 1, s2, start2 + i, p, partial));
-            }
-        }
-
-        public class Ticket
-        {
-            private int _modification;
-            private readonly Action _action;
-
-            public Ticket(Action r, int modification)
-            {
-                _action = r;
-                _modification = modification;
-            }
-
-            public void Renew(int modification)
-            {
-                if (_modification == modification) return;
-                _modification = modification;
-                _action();
             }
         }
     }

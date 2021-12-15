@@ -1,15 +1,17 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace PininSharp.Utils
 {
-    public readonly struct IndexSet : IEnumerable<int>
+    public readonly ref struct IndexSet
     {
-        public static readonly IndexSet Zero = new IndexSet(0x1);
-        public static readonly IndexSet One = new IndexSet(0x2);
-        public static readonly IndexSet None = new IndexSet(0x0);
+        public static IndexSet Zero => new(0x1);
+        public static IndexSet One => new(0x2);
+        public static IndexSet None => new(0x0);
+        public static IndexSet Null => new(-1);
 
         private readonly int _value;
 
@@ -73,16 +75,23 @@ namespace PininSharp.Utils
             return new IndexSet(_value << i);
         }
 
-
-        public IEnumerator<int> GetEnumerator()
+        public bool IsNull()
         {
+            return _value == -1;
+        }
+
+        public IEnumerable<int> GetEnumerator()
+        {
+            var list = new List<int>(7);
             var v = _value;
             for (var i = 0; i < 7; i++)
             {
-                if ((v & 0x1) == 0x1) yield return i;
-                else if (v == 0) yield break;
+                if ((v & 0x1) == 0x1) list.Add(i);
+                else if (v == 0) return list.AsEnumerable();
                 v >>= 1;
             }
+
+            return list.AsEnumerable();
         }
 
         public override string ToString()
@@ -94,18 +103,10 @@ namespace PininSharp.Utils
                 builder.Append(", ");
                 return true;
             });
-            if (builder.Length != 0)
-            {
-                builder.Remove(builder.Length - 2, builder.Length);
-                return builder.ToString();
-            }
+            if (builder.Length == 0) return "0";
+            builder.Remove(builder.Length - 2, builder.Length);
+            return builder.ToString();
 
-            return "0";
-        }
-
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return GetEnumerator();
         }
 
         public bool IsEmpty()
@@ -139,11 +140,11 @@ namespace PininSharp.Utils
                 _data[index] = set._value + 1;
             }
 
-            public IndexSet? Get(int index)
+            public IndexSet Get(int index)
             {
-                if (index >= _data.Length) return null;
+                if (index >= _data.Length) return Null;
                 var ret = _data[index];
-                return ret == 0 ? null : new IndexSet(ret - 1);
+                return ret == 0 ? Null : new IndexSet(ret - 1);
             }
         }
     }

@@ -5,46 +5,46 @@ using System.Text;
 
 namespace PininSharp.Utils
 {
-    public class PinyinFormat
+    public record PinyinFormat
     {
         // finals with tones on the second character
-        private static readonly HashSet<string> Offset = new HashSet<string>
+        private static readonly HashSet<string> Offset = new()
         {
             "ui", "iu", "uan", "uang", "ian", "iang", "ua",
             "ie", "uo", "iong", "iao", "ve", "ia"
         };
 
-        private static readonly Dictionary<char, char> None = new Dictionary<char, char>
+        private static readonly Dictionary<char, char> None = new()
         {
             {'a', 'a'}, {'o', 'o'}, {'e', 'e'}, {'i', 'i'}, {'u', 'u'}, {'v', 'ü'}
         };
 
-        private static readonly Dictionary<char, char> First = new Dictionary<char, char>
+        private static readonly Dictionary<char, char> First = new()
         {
             {'a', 'ā'}, {'o', 'ō'}, {'e', 'ē'}, {'i', 'ī'}, {'u', 'ū'}, {'v', 'ǖ'}
         };
 
-        private static readonly Dictionary<char, char> Second = new Dictionary<char, char>
+        private static readonly Dictionary<char, char> Second = new()
         {
             {'a', 'á'}, {'o', 'ó'}, {'e', 'é'}, {'i', 'í'}, {'u', 'ú'}, {'v', 'ǘ'}
         };
 
-        private static readonly Dictionary<char, char> Third = new Dictionary<char, char>
+        private static readonly Dictionary<char, char> Third = new()
         {
             {'a', 'ǎ'}, {'o', 'ǒ'}, {'e', 'ě'}, {'i', 'ǐ'}, {'u', 'ǔ'}, {'v', 'ǚ'}
         };
 
-        private static readonly Dictionary<char, char> Fourth = new Dictionary<char, char>
+        private static readonly Dictionary<char, char> Fourth = new()
         {
             {'a', 'à'}, {'o', 'ò'}, {'e', 'è'}, {'i', 'ì'}, {'u', 'ù'}, {'v', 'ǜ'}
         };
 
-        private static readonly List<Dictionary<char, char>> Tones = new List<Dictionary<char, char>>
+        private static readonly List<Dictionary<char, char>> Tones = new()
         {
             None, First, Second, Third, Fourth
         };
 
-        private static readonly Dictionary<string, string> Symbols = new Dictionary<string, string>
+        private static readonly Dictionary<string, string> Symbols = new()
         {
             {"a", "ㄚ"}, {"o", "ㄛ"}, {"e", "ㄜ"}, {"er", "ㄦ"}, {"ai", "ㄞ"},
             {"ei", "ㄟ"}, {"ao", "ㄠ"}, {"ou", "ㄡ"}, {"an", "ㄢ"}, {"en", "ㄣ"},
@@ -62,7 +62,7 @@ namespace PininSharp.Utils
             {"0", "˙"}, {"", ""}
         };
 
-        private static readonly Dictionary<string, string> Local = new Dictionary<string, string>
+        private static readonly Dictionary<string, string> Local = new()
         {
             {"yi", "i"}, {"you", "iu"}, {"yin", "in"}, {"ye", "ie"}, {"ying", "ing"},
             {"wu", "u"}, {"wen", "un"}, {"yu", "v"}, {"yue", "ve"}, {"yuan", "van"},
@@ -72,23 +72,35 @@ namespace PininSharp.Utils
             {"chi", "ch"}, {"ci", "c"}, {"zhi", "zh"}, {"zi", "z"}, {"ri", "r"}
         };
 
-        public Func<Pinyin, string> Format { get; internal set; }
+        public delegate string FormatDelegate(in Pinyin p);
 
-        public PinyinFormat(Func<Pinyin, string> format)
+        public readonly FormatDelegate Format;
+
+        public PinyinFormat(FormatDelegate format)
         {
             Format = format;
         }
 
-        public static readonly PinyinFormat Raw = new PinyinFormat(p => p.ToString()[..^1] ?? "null");
+        public static readonly PinyinFormat Raw = new(RawFormat);
+        public static readonly PinyinFormat Number = new(NumberFormat);
+        public static readonly PinyinFormat Phonetic = new(PhoneticFormat);
+        public static readonly PinyinFormat Unicode = new(UnicodeFormat);
 
-        public static readonly PinyinFormat Number = new PinyinFormat(p => p.ToString() ?? "null");
+        private static string RawFormat(in Pinyin p)
+        {
+            return p.ToString()[..^1];
+        }
 
-        public static readonly PinyinFormat Phonetic = new PinyinFormat(p =>
+        private static string NumberFormat(in Pinyin p)
+        {
+            return p.ToString();
+        }
+
+        private static string PhoneticFormat(in Pinyin p)
         {
             var s = p.ToString();
 
-            if (Local.TryGetValue(s[..^1], out var str))
-                s = str + s[^1];
+            if (Local.TryGetValue(s[..^1], out var str)) s = str + s[^1];
 
             var sb = new StringBuilder();
 
@@ -109,9 +121,9 @@ namespace PininSharp.Utils
             sb.Append(Symbols[split[1]]);
             if (!weak) sb.Append(Symbols[split[2]]);
             return sb.ToString();
-        });
+        }
 
-        public static readonly PinyinFormat Unicode = new PinyinFormat(p =>
+        private static string UnicodeFormat(in Pinyin p)
         {
             var sb = new StringBuilder();
             var s = p.ToString();
@@ -131,9 +143,9 @@ namespace PininSharp.Utils
             var offset = Offset.Contains(finale) ? 1 : 0;
             if (offset == 1) sb.Append(finale, 0, 1);
             var group = Tones[s[^1] - '0'];
-            sb.Append(group[finale[offset]]);
+            sb.Append(@group[finale[offset]]);
             if (finale.Length > offset + 1) sb.Append(finale, offset + 1, finale.Length - offset - 1);
             return sb.ToString();
-        });
+        }
     }
 }

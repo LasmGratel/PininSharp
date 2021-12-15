@@ -37,7 +37,7 @@ namespace PininSharp.Elements
                     l.Insert(1, p.GetPhoneme("h"));
                 }
             }
-            Phonemes = l.Where(x => x != null).Select(x => x!).ToArray();
+            Phonemes = l.Where(x => x != null).Select(x => x!.Value).ToArray();
 
             _duo = p.Keyboard.Duo;
         }

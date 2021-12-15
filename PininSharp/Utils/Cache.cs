@@ -5,7 +5,7 @@ namespace PininSharp.Utils
 {
     public class Cache<TK, TV>
     {
-        public Dictionary<TK, TV> Data = new Dictionary<TK, TV>();
+        public Dictionary<TK, TV> Data = new();
 
         public Func<TK, TV> Generator;
 

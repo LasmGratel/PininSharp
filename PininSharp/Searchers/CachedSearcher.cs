@@ -7,14 +7,14 @@ namespace PininSharp.Searchers
 {
     public class CachedSearcher<T> : SimpleSearcher<T>
     {
-        private readonly List<int> _all = new List<int>();
+        private readonly List<int> _all = new();
         private readonly float _scale;
         private int _lenCached;  // longest string with cached result
         private int _maxCached;  // maximum amount of cached results
         private int _total;  // total characters of all strings
-        private readonly Stats<string> _stats = new Stats<string>();
+        private readonly Stats<string> _stats = new();
 
-        private readonly Dictionary<string, List<int>> _cache = new Dictionary<string, List<int>>();
+        private readonly Dictionary<string, List<int>> _cache = new();
 
         public CachedSearcher(SearcherLogic logic, PinIn context) : this(logic, context, 1)
         {
@@ -40,7 +40,6 @@ namespace PininSharp.Searchers
 
         public override List<T> Search(string name)
         {
-            Ticket.Renew(Context.Modification);
             if (_all.Count == 0) return new List<T>();
 
             if (_maxCached == 0)
@@ -116,7 +115,7 @@ namespace PininSharp.Searchers
 
     public sealed class Stats<T>
     {
-        private readonly Dictionary<T, int> _data = new Dictionary<T, int>();
+        private readonly Dictionary<T, int> _data = new();
 
         public void Count(T key)
         {

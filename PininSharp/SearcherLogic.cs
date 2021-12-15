@@ -5,21 +5,21 @@ namespace PininSharp
 {
     public sealed class SearcherLogic
     {
-        public static readonly SearcherLogic Begin = new SearcherLogic(
+        public static readonly SearcherLogic Begin = new(
             (a, offset, start) => a.Begins(offset, start),
             (p, s1, s2) => p.Begins(s1, s2),
             (s1, s2) => s1.StartsWith(s2, StringComparison.Ordinal),
             "Begin"
         );
 
-        public static readonly SearcherLogic Contain = new SearcherLogic(
+        public static readonly SearcherLogic Contain = new(
             (a, offset, start) => a.Contains(offset, start),
             (p, s1, s2) => p.Contains(s1, s2),
             (s1, s2) => s1.Contains(s2, StringComparison.Ordinal),
             "Contain"
         );
 
-        public static readonly SearcherLogic Equal = new SearcherLogic(
+        public static readonly SearcherLogic Equal = new(
             (a, offset, start) => a.Matches(offset, start),
             (p, s1, s2) => p.Matches(s1, s2),
             (s1, s2) => s1.Equals(s2, StringComparison.Ordinal),

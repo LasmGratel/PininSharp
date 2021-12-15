@@ -7,14 +7,13 @@ namespace PininSharp.Searchers
 {
     public class SimpleSearcher<T> : ISearcher<T>
     {
-        protected readonly List<T> Objs = new List<T>();
+        protected readonly List<T> Objs = new();
         protected readonly Accelerator Acc;
-        protected readonly Compressor Strs = new Compressor();
+        protected readonly Compressor Strs = new();
 
         public PinIn Context { get; internal set; }
-        public SearcherLogic Logic { get; internal set; }
 
-        protected readonly PinIn.Ticket Ticket;
+        public SearcherLogic Logic { get; internal set; }
 
         public SimpleSearcher(SearcherLogic logic, PinIn context)
         {
@@ -22,7 +21,6 @@ namespace PininSharp.Searchers
             Logic = logic;
             Acc = new Accelerator(context);
             Acc.SetProvider(Strs);
-            Ticket = context.CreateTicket(Reset);
         }
 
         public virtual void Put(string name, T identifier)
@@ -46,8 +44,6 @@ namespace PininSharp.Searchers
             }
             return ret;
         }
-
-
         public virtual void Reset()
         {
             Acc.Reset();

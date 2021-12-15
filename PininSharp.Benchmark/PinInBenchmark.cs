@@ -88,7 +88,7 @@ namespace PininSharp.Benchmark
         {
             foreach (var s in _searchWords)
             {
-                searcher.Search(s);
+                _ = searcher.Search(s);
             }
         }
 

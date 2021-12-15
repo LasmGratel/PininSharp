@@ -31,7 +31,7 @@ namespace PininSharp.Test
         {
             var p = new PinIn { Keyboard = Keyboard.Daqian };
             p.Load();
-            p.CommitChanges();
+            
             Assert.IsTrue(p.Contains("测试文本", "hk4g4jp61p3"));
             Assert.IsTrue(p.Contains("测试文本", "hkgjp1"));
             Assert.IsTrue(p.Contains("錫", "vu6"));
@@ -49,7 +49,7 @@ namespace PininSharp.Test
         {
             var p = new PinIn { Keyboard = Keyboard.Xiaohe };
             p.Load();
-            p.CommitChanges();
+            
             Assert.IsTrue(p.Contains("测试文本", "ceuiwfbf"));
             Assert.IsTrue(p.Contains("测试文本", "ceuiwf2"));
             Assert.IsTrue(!p.Contains("测试文本", "ceuiw2"));
@@ -63,7 +63,7 @@ namespace PininSharp.Test
         {
             var p = new PinIn { Keyboard = Keyboard.Ziranma };
             p.Load();
-            p.CommitChanges();
+            
             Assert.IsTrue(p.Contains("测试文本", "ceuiwfbf"));
             Assert.IsTrue(p.Contains("测试文本", "ceuiwf2"));
             Assert.IsTrue(!p.Contains("测试文本", "ceuiw2"));
@@ -134,7 +134,7 @@ namespace PininSharp.Test
                 fSh2S = true,
             };
             p.Load();
-            p.CommitChanges();
+            
             tree = new TreeSearcher<int>(SearcherLogic.Contain, p);
             tree.Put("测试文本", 0);
             tree.Put("测试文字", 3);
@@ -146,7 +146,7 @@ namespace PininSharp.Test
                 Keyboard = Keyboard.Daqian
             };
             p.Load();
-            p.CommitChanges();
+            
             tree = new TreeSearcher<int>(SearcherLogic.Contain, p);
             tree.Put("测试文本", 0);
             tree.Put("测试文字", 3);
@@ -205,7 +205,6 @@ namespace PininSharp.Test
             Assert.IsTrue(PinyinFormat.Unicode.Format(py).Equals("yuán"));
             Assert.IsTrue(PinyinFormat.Phonetic.Format(py).Equals("ㄩㄢˊ"));
             pi.format = PinyinFormat.Phonetic;
-            pi.CommitChanges();
             Assert.IsTrue(pi.Format(pi.GetPinyin("le0").Value!).Equals("˙ㄌㄜ"));
         }
     }

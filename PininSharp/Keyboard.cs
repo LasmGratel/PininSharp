@@ -7,7 +7,7 @@ namespace PininSharp
 {
     public class Keyboard
     {
-        private static readonly Dictionary<string, string> DaqianKeys = new Dictionary<string, string>
+        private static readonly Dictionary<string, string> DaqianKeys = new()
         {
             {"", ""}, {"0", ""}, {"1", " "}, {"2", "6"}, {"3", "3"},
             {"4", "4"}, {"a", "8"}, {"ai", "9"}, {"an", "0"}, {"ang", ";"},
@@ -24,7 +24,7 @@ namespace PininSharp
             {"ve", "m,"}, {"vn", "mp"}, {"w", "j"}, {"x", "v"}, {"y", "u"},
         };
 
-        private static readonly Dictionary<string, string> XiaoheKeys = new Dictionary<string, string>
+        private static readonly Dictionary<string, string> XiaoheKeys = new()
         {
             {"ai", "d"}, {"an", "j"}, {"ang", "h"}, {"ao", "c"}, {"ch", "i"},
             {"ei", "w"}, {"en", "f"}, {"eng", "g"}, {"ia", "x"}, {"ian", "m"},
@@ -34,7 +34,7 @@ namespace PininSharp
             {"un", "y"}, {"uo", "o"}, {"ve", "t"}, {"ue", "t"}, {"vn", "y"},
         };
 
-        private static readonly Dictionary<string, string> ZiranmaKeys = new Dictionary<string, string>
+        private static readonly Dictionary<string, string> ZiranmaKeys = new()
         {
             {"ai", "l"}, {"an", "j"}, {"ang", "h"}, {"ao", "k"}, {"ch", "i"},
             {"ei", "z"}, {"en", "f"}, {"eng", "g"}, {"ia", "w"}, {"ian", "m"},
@@ -45,7 +45,7 @@ namespace PininSharp
             {"zh", "v"},
         };
 
-        private static readonly Dictionary<string, string> PhoneticLocal = new Dictionary<string, string>
+        private static readonly Dictionary<string, string> PhoneticLocal = new()
         {
             {"yi", "i"}, {"you", "iu"}, {"yin", "in"}, {"ye", "ie"}, {"ying", "ing"},
             {"wu", "u"}, {"wen", "un"}, {"yu", "v"}, {"yue", "ve"}, {"yuan", "van"},
@@ -55,10 +55,10 @@ namespace PininSharp
             {"chi", "ch"}, {"ci", "c"}, {"zhi", "zh"}, {"zi", "z"}, {"ri", "r"},
         };
 
-        public static Keyboard Quanpin = new Keyboard(null, null, StandardCutter, false);
-        public static Keyboard Daqian = new Keyboard(PhoneticLocal, DaqianKeys, StandardCutter, false);
-        public static Keyboard Xiaohe = new Keyboard(null, XiaoheKeys, ZeroCutter, true);
-        public static Keyboard Ziranma = new Keyboard(null, ZiranmaKeys, ZeroCutter, true);
+        public static Keyboard Quanpin = new(null, null, StandardCutter, false);
+        public static Keyboard Daqian = new(PhoneticLocal, DaqianKeys, StandardCutter, false);
+        public static Keyboard Xiaohe = new(null, XiaoheKeys, ZeroCutter, true);
+        public static Keyboard Ziranma = new(null, ZiranmaKeys, ZeroCutter, true);
 
         private readonly Dictionary<string, string>? _local;
         private readonly Dictionary<string, string>? _keys;

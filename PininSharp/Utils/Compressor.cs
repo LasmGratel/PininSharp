@@ -5,8 +5,8 @@ namespace PininSharp.Utils
 {
     public class Compressor : Accelerator.IProvider
     {
-        private readonly List<char> _chars = new List<char>();
-        private readonly List<int> _strs = new List<int>();
+        private readonly List<char> _chars = new();
+        private readonly List<int> _strs = new();
 
         public List<int> Offsets()
         {

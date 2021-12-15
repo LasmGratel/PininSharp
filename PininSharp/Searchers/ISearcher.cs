@@ -11,5 +11,7 @@ namespace PininSharp
         List<T> Search(string name);
 
         PinIn Context { get; }
+
+        void Reset();
     }
 }

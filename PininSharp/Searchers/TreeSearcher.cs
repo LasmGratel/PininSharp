@@ -9,13 +9,13 @@ namespace PininSharp.Searchers
     {
         public INode<T> Root = new NDense<T>();
 
-        public readonly List<T> Objects = new List<T>();
-        public readonly List<NAcc<T>> Naccs = new List<NAcc<T>>();
+        public readonly List<T> Objects = new();
+        public readonly List<NAcc<T>> Naccs = new();
         public readonly Accelerator Acc;
-        public readonly Compressor Strs = new Compressor();
+        public readonly Compressor Strs = new();
         public PinIn Context { get; internal set; }
+
         public SearcherLogic Logic { get; internal set; }
-        public readonly PinIn.Ticket Ticket;
 
         /// <summary>
         /// Threshold to change from Hash to RB Tree
@@ -28,16 +28,10 @@ namespace PininSharp.Searchers
             Context = context;
             Acc = new Accelerator(context);
             Acc.SetProvider(Strs);
-            Ticket = context.CreateTicket(() =>
-            {
-                Naccs.ForEach(i => i.Reload(this));
-                Acc.Reset();
-            });
         }
 
         public void Put(string name, T identifier)
         {
-            Ticket.Renew(Context.Modification);
             var pos = Strs.Put(name);
             var end = Logic == SearcherLogic.Contain ? name.Length : 1;
             for (var i = 0; i < end; i++)
@@ -45,18 +39,18 @@ namespace PininSharp.Searchers
             Objects.Add(identifier);
         }
 
+        public void Reset()
+        {
+            Naccs.ForEach(i => i.Reload(this));
+            Acc.Reset();
+        }
+
         public List<T> Search(string s)
         {
-            Ticket.Renew(Context.Modification);
             Acc.Search(s);
             var ret = new SortedSet<int>();
             Root.Get(this, ret, 0);
             return ret.Select(i => Objects[i]).ToList();
-        }
-
-        public void Refresh()
-        {
-            Ticket.Renew(Context.Modification);
         }
 
         public override string ToString()
@@ -159,7 +153,7 @@ namespace PininSharp.Searchers
         public Accelerator? Acc { get; internal set; }
 
         // offset, object, offset, object
-        private readonly List<int> _data = new List<int>();
+        private readonly List<int> _data = new();
 
         public void Get(TreeSearcher<T> p, ISet<int> ret, int offset)
         {
@@ -293,7 +287,7 @@ namespace PininSharp.Searchers
 
     public class NAcc<T> : NMap<T>
     {
-        private readonly Dictionary<Phoneme, ISet<char>> _index = new Dictionary<Phoneme, ISet<char>>();
+        private readonly Dictionary<Phoneme, ISet<char>> _index = new();
 
         public NAcc(TreeSearcher<T> p, NMap<T> n)
         {

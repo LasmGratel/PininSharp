@@ -14,7 +14,7 @@ namespace PininSharp.Utils
         public IProvider? Provider { get; private set; }
 
 
-        private readonly Str _str = new Str();
+        private readonly Str _str = new();
         private bool _partial;
 
         public Accelerator(PinIn context)
@@ -41,16 +41,17 @@ namespace PininSharp.Utils
         {
             var c = _context.GetCharacter(ch);
             var ret = (_searchChars[offset] == c.Get() ? IndexSet.One : IndexSet.None).Copy();
-            return c.Pinyins().Aggregate(ret, (current, p) => current.Merge(Get(p, offset)));
+            foreach (var p in c.Pinyins()) ret = ret.Merge(Get(p, offset));
+            return ret;
         }
 
-        public IndexSet Get(Pinyin p, int offset)
+        public IndexSet Get(in Pinyin p, int offset)
         {
             for (var i = _cache.Count; i <= offset; i++)
                 _cache.Add(new IndexSet.Storage());
             var data = _cache[offset];
             var ret = data.Get(p.Id);
-            if (ret != null) return ret.Value;
+            if (!ret.IsNull()) return ret;
             var indexSet = p.Match(_searchStr, offset, _partial);
             data.Set(indexSet, p.Id);
             return indexSet;
