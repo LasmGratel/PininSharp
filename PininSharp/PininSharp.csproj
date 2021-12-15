@@ -7,8 +7,7 @@
     <Version>1.1.0</Version>
     <RepositoryType>git</RepositoryType>
     <RepositoryUrl>https://github.com/LasmGratel/PininSharp.git</RepositoryUrl>
-    <SignAssembly>true</SignAssembly>
-    <AssemblyOriginatorKeyFile>lasm.pfx</AssemblyOriginatorKeyFile>
+    <SignAssembly>False</SignAssembly>
     <EnableNETAnalyzers>true</EnableNETAnalyzers>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
     <Nullable>enable</Nullable>
