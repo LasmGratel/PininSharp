@@ -30,13 +30,6 @@ Processor=Intel i7-11800H
 
 ## 使用
 
-```shell
-dotnet nuget add source --username LasmGratel --password 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 --store-password-in-clear-text --name github "https://nuget.pkg.github.com/LasmGratel/index.json"
-dotnet add package PininSharp
-```
-
-**你可能以为我把密码明文放在这里了，但是这个只有读取仓库的权限哈哈**
-
 ```csharp
 var tree = new TreeSearcher<int>(SearcherLogic.Contain, PinIn.CreateDefault());
 tree.Put("测试文本", 1);
