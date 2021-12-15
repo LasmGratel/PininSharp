@@ -312,7 +312,9 @@ namespace PininSharp.Searchers
             }
             else
             {
-                if (Children?.TryGetValue(p.Acc.Search()[offset], out var n) == true) n?.Get(p, ret, offset + 1);
+                // ReSharper disable once InlineOutVariableDeclaration
+                INode<T>? n = null;
+                if (Children?.TryGetValue(p.Acc.Search()[offset], out n) == true) n?.Get(p, ret, offset + 1);
                 foreach (var c in _index.Where(pair => !pair.Key.Match(p.Acc.Search(), offset, true).IsEmpty()).SelectMany(pair => pair.Value))
                 {
                     p.Acc.Get(c, offset).ForEach(j => Children?[c].Get(p, ret, offset + j));
