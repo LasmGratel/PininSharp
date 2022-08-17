@@ -122,9 +122,9 @@ namespace PininSharp
             return ret ?? new Character(c, Array.Empty<Pinyin>());
         }
 
-        public string Format(in Pinyin p)
+        public string Format(ref Pinyin p)
         {
-            return format.Format(p);
+            return format.Format(ref p);
         }
 
         public static class Matcher
@@ -160,7 +160,7 @@ namespace PininSharp
                     return s.Get(i);
                 }
 
-                return !s.Traverse(i => !Check(s1, start1 + 1, s2, start2 + i, p, partial));
+                return s.Traverse(i => Check(s1, start1 + 1, s2, start2 + i, p, partial));
             }
         }
     }

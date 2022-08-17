@@ -39,12 +39,7 @@ namespace PininSharp.Utils
 
         public IndexSet Merge(in IndexSet s)
         {
-            var value = _value;
-            if (value == 0x1)
-                value = s._value;
-            else
-                value = value |= s._value;
-            return new IndexSet(value);
+            return new IndexSet(_value == 0x1 ? s._value : _value | s._value);
         }
 
         public bool Traverse(Func<int, bool> p)
@@ -52,11 +47,11 @@ namespace PininSharp.Utils
             var v = _value;
             for (var i = 0; i < 7; i++)
             {
-                if ((v & 0x1) == 0x1 && !p(i)) return false;
-                if (v == 0) return true;
+                if ((v & 0x1) == 0x1 && p(i)) return true;
+                if (v == 0) return false;
                 v >>= 1;
             }
-            return true;
+            return false;
         }
 
         public void ForEach(Action<int> c)
@@ -97,11 +92,10 @@ namespace PininSharp.Utils
         public override string ToString()
         {
             var builder = new StringBuilder();
-            Traverse(i =>
+            ForEach(i =>
             {
                 builder.Append(i);
                 builder.Append(", ");
-                return true;
             });
             if (builder.Length == 0) return "0";
             builder.Remove(builder.Length - 2, builder.Length);
@@ -127,6 +121,7 @@ namespace PininSharp.Utils
             {
                 if (index >= _data.Length)
                 {
+                    // here we get the smallest power of 2 that is larger than index
                     var size = index;
                     size |= size >> 1;
                     size |= size >> 2;

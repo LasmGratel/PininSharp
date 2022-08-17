@@ -54,6 +54,16 @@ namespace PininSharp.Elements
             return ret;
         }
 
+        public bool MatchSequence(char c)
+        {
+            if (_strings.Any(s => s[0] == c))
+            {
+                return true;
+            }
+
+            return false;
+        }
+
         public bool IsEmpty()
         {
             return _strings.Length == 1 && _strings[0].Trim() == "";

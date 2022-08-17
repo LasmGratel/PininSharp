@@ -72,7 +72,7 @@ namespace PininSharp.Utils
             {"chi", "ch"}, {"ci", "c"}, {"zhi", "zh"}, {"zi", "z"}, {"ri", "r"}
         };
 
-        public delegate string FormatDelegate(in Pinyin p);
+        public delegate string FormatDelegate(ref Pinyin p);
 
         public readonly FormatDelegate Format;
 
@@ -86,17 +86,17 @@ namespace PininSharp.Utils
         public static readonly PinyinFormat Phonetic = new(PhoneticFormat);
         public static readonly PinyinFormat Unicode = new(UnicodeFormat);
 
-        private static string RawFormat(in Pinyin p)
+        private static string RawFormat(ref Pinyin p)
         {
             return p.ToString()[..^1];
         }
 
-        private static string NumberFormat(in Pinyin p)
+        private static string NumberFormat(ref Pinyin p)
         {
             return p.ToString();
         }
 
-        private static string PhoneticFormat(in Pinyin p)
+        private static string PhoneticFormat(ref Pinyin p)
         {
             var s = p.ToString();
 
@@ -123,7 +123,7 @@ namespace PininSharp.Utils
             return sb.ToString();
         }
 
-        private static string UnicodeFormat(in Pinyin p)
+        private static string UnicodeFormat(ref Pinyin p)
         {
             var sb = new StringBuilder();
             var s = p.ToString();

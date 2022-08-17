@@ -89,7 +89,7 @@ namespace PininSharp.Utils
                 return s.Get(i);
             }
 
-            return !s.Traverse(i => !Check(offset + i, start + 1));
+            return s.Traverse(i => Check(offset + i, start + 1));
         }
 
         public bool Matches(int offset, int start)

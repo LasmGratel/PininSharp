@@ -12,18 +12,24 @@ namespace PininSharp.Test
         public void Quanpin()
         {
             var p = PinIn.CreateDefault();
-            Assert.IsTrue(p.Contains("²âÊÔÎÄ±¾", "ceshiwenben"));
-            Assert.IsTrue(p.Contains("²âÊÔÎÄ±¾", "ceshiwenbe"));
-            Assert.IsTrue(p.Contains("²âÊÔÎÄ±¾", "ceshiwben"));
-            Assert.IsTrue(p.Contains("²âÊÔÎÄ±¾", "ce4shi4wb"));
-            Assert.IsTrue(!p.Contains("²âÊÔÎÄ±¾", "ce2shi4wb"));
-            Assert.IsTrue(p.Contains("ºÏ½ğÂ¯", "hejinlu"));
-            Assert.IsTrue(p.Contains("Ï´¿ó³¡", "xikuangchang"));
-            Assert.IsTrue(p.Contains("Á÷Ìå", "liuti"));
-            Assert.IsTrue(p.Contains("ºä20", "hong2"));
+            Assert.IsTrue(p.Contains("æµ‹è¯•æ–‡æœ¬", "ceshiwenben"));
+            Assert.IsTrue(p.Contains("æµ‹è¯•æ–‡æœ¬", "ceshiwenbe"));
+            Assert.IsTrue(p.Contains("æµ‹è¯•æ–‡æœ¬", "ceshiwben"));
+            Assert.IsTrue(p.Contains("æµ‹è¯•æ–‡æœ¬", "ce4shi4wb"));
+            Assert.IsTrue(!p.Contains("æµ‹è¯•æ–‡æœ¬", "ce2shi4wb"));
+            Assert.IsTrue(p.Contains("åˆé‡‘ç‚‰", "hejinlu"));
+            Assert.IsTrue(p.Contains("æ´—çŸ¿åœº", "xikuangchang"));
+            Assert.IsTrue(p.Contains("æµä½“", "liuti"));
+            Assert.IsTrue(p.Contains("è½°20", "hong2"));
             Assert.IsTrue(p.Contains("hong2", "hong2"));
-            Assert.IsTrue(!p.Begins("²â", "ce4a"));
+            Assert.IsTrue(!p.Begins("æµ‹", "ce4a"));
             Assert.IsTrue(!p.Begins("", "a"));
+            Assert.IsTrue(p.Contains("çŸ³å¤´", "stou"));
+            Assert.IsTrue(p.Contains("å®‰å…¨", "aquan"));
+            Assert.IsTrue(p.Contains("æ˜‚æ‰¬", "ayang"));
+            // TODO FIXME
+            Assert.IsFalse(p.Contains("æ˜‚æ‰¬", "anyang"));
+            Assert.IsTrue(p.Contains("æ˜‚æ‰¬", "angyang"));
         }
 
         [TestMethod]
@@ -32,16 +38,16 @@ namespace PininSharp.Test
             var p = new PinIn { Keyboard = Keyboard.Daqian };
             p.Load();
             
-            Assert.IsTrue(p.Contains("²âÊÔÎÄ±¾", "hk4g4jp61p3"));
-            Assert.IsTrue(p.Contains("²âÊÔÎÄ±¾", "hkgjp1"));
-            Assert.IsTrue(p.Contains("åa", "vu6"));
+            Assert.IsTrue(p.Contains("æµ‹è¯•æ–‡æœ¬", "hk4g4jp61p3"));
+            Assert.IsTrue(p.Contains("æµ‹è¯•æ–‡æœ¬", "hkgjp1"));
+            Assert.IsTrue(p.Contains("éŒ«", "vu6"));
             // TODO FIXME
-            //Assert.IsTrue(p.Contains("èÊ¯", "yj0"));
-            //Assert.IsTrue(p.Contains("ÎïÙ|", "j456"));
-            Assert.IsTrue(p.Contains("Ä_ÊÖ¼Ü", "rul3g.3ru84"));
-            Assert.IsTrue(p.Contains("ùZ", "k6"));
-            Assert.IsTrue(p.Contains("È~", "u,4"));
-            Assert.IsTrue(p.Contains("¹²Í¬", "ej/wj/"));
+            //Assert.IsTrue(p.Contains("é‘½çŸ³", "yj0"));
+            //Assert.IsTrue(p.Contains("ç‰©è³ª", "j456"));
+            Assert.IsTrue(p.Contains("è…³æ‰‹æ¶", "rul3g.3ru84"));
+            Assert.IsTrue(p.Contains("éµ", "k6"));
+            Assert.IsTrue(p.Contains("è‘‰", "u,4"));
+            Assert.IsTrue(p.Contains("å…±åŒ", "ej/wj/"));
         }
 
         [TestMethod]
@@ -50,12 +56,12 @@ namespace PininSharp.Test
             var p = new PinIn { Keyboard = Keyboard.Xiaohe };
             p.Load();
             
-            Assert.IsTrue(p.Contains("²âÊÔÎÄ±¾", "ceuiwfbf"));
-            Assert.IsTrue(p.Contains("²âÊÔÎÄ±¾", "ceuiwf2"));
-            Assert.IsTrue(!p.Contains("²âÊÔÎÄ±¾", "ceuiw2"));
-            Assert.IsTrue(p.Contains("ºÏ½ğÂ¯", "hej"));
-            Assert.IsTrue(p.Contains("Ï´¿ó³¡", "xikl4"));
-            Assert.IsTrue(p.Contains("ÔÂÇò", "ytqq"));
+            Assert.IsTrue(p.Contains("æµ‹è¯•æ–‡æœ¬", "ceuiwfbf"));
+            Assert.IsTrue(p.Contains("æµ‹è¯•æ–‡æœ¬", "ceuiwf2"));
+            Assert.IsTrue(!p.Contains("æµ‹è¯•æ–‡æœ¬", "ceuiw2"));
+            Assert.IsTrue(p.Contains("åˆé‡‘ç‚‰", "hej"));
+            Assert.IsTrue(p.Contains("æ´—çŸ¿åœº", "xikl4"));
+            Assert.IsTrue(p.Contains("æœˆçƒ", "ytqq"));
         }
 
         [TestMethod]
@@ -64,26 +70,26 @@ namespace PininSharp.Test
             var p = new PinIn { Keyboard = Keyboard.Ziranma };
             p.Load();
             
-            Assert.IsTrue(p.Contains("²âÊÔÎÄ±¾", "ceuiwfbf"));
-            Assert.IsTrue(p.Contains("²âÊÔÎÄ±¾", "ceuiwf2"));
-            Assert.IsTrue(!p.Contains("²âÊÔÎÄ±¾", "ceuiw2"));
-            Assert.IsTrue(p.Contains("ºÏ½ğÂ¯", "hej"));
-            Assert.IsTrue(p.Contains("Ï´¿ó³¡", "xikd4"));
-            Assert.IsTrue(p.Contains("ÔÂÇò", "ytqq"));
-            Assert.IsTrue(p.Contains("°²È«", "anqr"));
+            Assert.IsTrue(p.Contains("æµ‹è¯•æ–‡æœ¬", "ceuiwfbf"));
+            Assert.IsTrue(p.Contains("æµ‹è¯•æ–‡æœ¬", "ceuiwf2"));
+            Assert.IsTrue(!p.Contains("æµ‹è¯•æ–‡æœ¬", "ceuiw2"));
+            Assert.IsTrue(p.Contains("åˆé‡‘ç‚‰", "hej"));
+            Assert.IsTrue(p.Contains("æ´—çŸ¿åœº", "xikd4"));
+            Assert.IsTrue(p.Contains("æœˆçƒ", "ytqq"));
+            Assert.IsTrue(p.Contains("å®‰å…¨", "anqr"));
         }
 
         [TestMethod]
         public void Tree()
         {
             var tree = new TreeSearcher<int>(SearcherLogic.Contain, PinIn.CreateDefault());
-            tree.Put("²âÊÔÎÄ±¾", 1);
-            tree.Put("²âÊÔÇĞ·Ö", 5);
-            tree.Put("²âÊÔÇĞ·ÖÎÄ±¾", 6);
-            tree.Put("ºÏ½ğÂ¯", 2);
-            tree.Put("Ï´¿ó³¡", 3);
-            tree.Put("Á÷Ìå", 4);
-            tree.Put("ºä20", 7);
+            tree.Put("æµ‹è¯•æ–‡æœ¬", 1);
+            tree.Put("æµ‹è¯•åˆ‡åˆ†", 5);
+            tree.Put("æµ‹è¯•åˆ‡åˆ†æ–‡æœ¬", 6);
+            tree.Put("åˆé‡‘ç‚‰", 2);
+            tree.Put("æ´—çŸ¿åœº", 3);
+            tree.Put("æµä½“", 4);
+            tree.Put("è½°20", 7);
             tree.Put("hong2", 8);
 
             List<int> s;
@@ -118,8 +124,8 @@ namespace PininSharp.Test
         {
             var p = PinIn.CreateDefault();
             var tree = new TreeSearcher<int>(SearcherLogic.Contain, p);
-            tree.Put("²âÊÔÎÄ±¾", 0);
-            tree.Put("²âÊÔÎÄ×Ö", 3);
+            tree.Put("æµ‹è¯•æ–‡æœ¬", 0);
+            tree.Put("æµ‹è¯•æ–‡å­—", 3);
             List<int> s;
             s = tree.Search("ce4shi4wb");
             Assert.IsTrue(s.Count == 1 && s.Contains(0));
@@ -136,8 +142,8 @@ namespace PininSharp.Test
             p.Load();
             
             tree = new TreeSearcher<int>(SearcherLogic.Contain, p);
-            tree.Put("²âÊÔÎÄ±¾", 0);
-            tree.Put("²âÊÔÎÄ×Ö", 3);
+            tree.Put("æµ‹è¯•æ–‡æœ¬", 0);
+            tree.Put("æµ‹è¯•æ–‡å­—", 3);
             s = tree.Search("ce4siw");
             Assert.IsTrue(s.Count == 2);
             p = new PinIn
@@ -148,8 +154,8 @@ namespace PininSharp.Test
             p.Load();
             
             tree = new TreeSearcher<int>(SearcherLogic.Contain, p);
-            tree.Put("²âÊÔÎÄ±¾", 0);
-            tree.Put("²âÊÔÎÄ×Ö", 3);
+            tree.Put("æµ‹è¯•æ–‡æœ¬", 0);
+            tree.Put("æµ‹è¯•æ–‡å­—", 3);
             s = tree.Search("hk4g4jp61p3");
             Assert.IsTrue(s.Count == 1);
             s = tree.Search("ce4shi4wb");
@@ -166,17 +172,17 @@ namespace PininSharp.Test
             };
             foreach (var s in ss)
             {
-                s.Put("²âÊÔÎÄ±¾", 1);
-                s.Put("²âÊÔÇĞ·Ö", 5);
-                s.Put("²âÊÔÇĞ·ÖÎÄ±¾", 6);
-                s.Put("ºÏ½ğÂ¯", 2);
-                s.Put("Ï´¿ó³¡", 3);
-                s.Put("Á÷Ìå", 4);
-                s.Put("ºä20", 7);
+                s.Put("æµ‹è¯•æ–‡æœ¬", 1);
+                s.Put("æµ‹è¯•åˆ‡åˆ†", 5);
+                s.Put("æµ‹è¯•åˆ‡åˆ†æ–‡æœ¬", 6);
+                s.Put("åˆé‡‘ç‚‰", 2);
+                s.Put("æ´—çŸ¿åœº", 3);
+                s.Put("æµä½“", 4);
+                s.Put("è½°20", 7);
                 s.Put("hong2", 8);
-                s.Put("ÔÂÇò", 9);
-                s.Put("ºº»¯", 10);
-                s.Put("º°»°", 11);
+                s.Put("æœˆçƒ", 9);
+                s.Put("æ±‰åŒ–", 10);
+                s.Put("å–Šè¯", 11);
                 List<int> list;
                 list = s.Search("hong2");
                 Assert.IsTrue(list.Count == 1 && list.Contains(8));
@@ -198,14 +204,15 @@ namespace PininSharp.Test
         {
             var pi = new PinIn();
             pi.Load();
-            var ch = pi.GetCharacter('Ô²');
+            var ch = pi.GetCharacter('åœ†');
             var py = ch.Pinyins()[0];
-            Assert.IsTrue(PinyinFormat.Number.Format(py).Equals("yuan2"));
-            Assert.IsTrue(PinyinFormat.Raw.Format(py).Equals("yuan"));
-            Assert.IsTrue(PinyinFormat.Unicode.Format(py).Equals("yu¨¢n"));
-            Assert.IsTrue(PinyinFormat.Phonetic.Format(py).Equals("¨é¨â¨@"));
+            Assert.IsTrue(PinyinFormat.Number.Format(ref py).Equals("yuan2"));
+            Assert.IsTrue(PinyinFormat.Raw.Format(ref py).Equals("yuan"));
+            Assert.IsTrue(PinyinFormat.Unicode.Format(ref py).Equals("yuÃ¡n"));
+            Assert.IsTrue(PinyinFormat.Phonetic.Format(ref py).Equals("ã„©ã„¢ËŠ"));
             pi.format = PinyinFormat.Phonetic;
-            Assert.IsTrue(pi.Format(pi.GetPinyin("le0").Value!).Equals("¨B¨Ì¨Ü"));
+            var temp = pi.GetPinyin("le0").Value!;
+            Assert.IsTrue(pi.Format(ref temp).Equals("Ë™ã„Œã„œ"));
         }
     }
 }

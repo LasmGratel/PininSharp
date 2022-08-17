@@ -55,23 +55,25 @@ namespace PininSharp
             {"chi", "ch"}, {"ci", "c"}, {"zhi", "zh"}, {"zi", "z"}, {"ri", "r"},
         };
 
-        public static Keyboard Quanpin = new(null, null, StandardCutter, false);
-        public static Keyboard Daqian = new(PhoneticLocal, DaqianKeys, StandardCutter, false);
-        public static Keyboard Xiaohe = new(null, XiaoheKeys, ZeroCutter, true);
-        public static Keyboard Ziranma = new(null, ZiranmaKeys, ZeroCutter, true);
+        public static Keyboard Quanpin = new(null, null, StandardCutter, false, true);
+        public static Keyboard Daqian = new(PhoneticLocal, DaqianKeys, StandardCutter, false, false);
+        public static Keyboard Xiaohe = new(null, XiaoheKeys, ZeroCutter, true, false);
+        public static Keyboard Ziranma = new(null, ZiranmaKeys, ZeroCutter, true, false);
 
         private readonly Dictionary<string, string>? _local;
         private readonly Dictionary<string, string>? _keys;
         private readonly Func<string, ICollection<string>> _cutter;
         public readonly bool Duo;
+        public readonly bool Sequence;
 
         public Keyboard(Dictionary<string, string>? local, Dictionary<string, string>? keys,
-        Func<string, ICollection<string>> cutter, bool duo)
+        Func<string, ICollection<string>> cutter, bool duo, bool sequence)
         {
             _local = local;
             _keys = keys;
             _cutter = cutter;
             Duo = duo;
+            Sequence = sequence;
         }
 
         public static List<string> StandardCutter(string s)
